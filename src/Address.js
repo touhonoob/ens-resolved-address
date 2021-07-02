@@ -15,7 +15,7 @@ import {
 } from './utils/address.js'
 import Loader from './Loader.js'
 import { SingleNameBlockies } from './Blockies.js'
-import warningImage from './assets/warning.svg'
+import WarningImage from './assets/warning.svg'
 
 import './style.css'
 
@@ -27,7 +27,9 @@ function Address(props) {
   const [isResolvingInProgress, setIsResolvingInProgress] = useState(false)
   const [error, setError] = useState(null)
   const [ENS, setENS] = useState(null)
+  const [web3Connected, setWeb3Connected] = useState(false);
   const currentInput = useRef()
+  const initialRun = useRef(true);
 
   const inputDebouncerHandler = async (input) => {
     try {
@@ -73,7 +75,22 @@ function Address(props) {
       setENS(ens)
     }
     setup()
-  }, [props.provider])
+  }, [props.provider, handleInput])
+
+  useEffect(() => {
+    if (window.ethereum.isConnected()) {
+      setWeb3Connected(true);
+    }
+  })
+
+  useEffect(() => {
+    if (web3Connected && ENS) {
+      if (initialRun.current && props.presetValue.length !== 0) {
+        handleInput(props.presetValue)
+        initialRun.current = false;
+      }
+    }
+  }, [props.presetValue, handleInput, ENS, web3Connected]);
 
   const handleInput = useCallback(
     async (address) => {
@@ -95,17 +112,11 @@ function Address(props) {
     [inputDebouncer]
   )
 
-  useEffect(() => {
-    if (props.presetValue.length !== 0) {
-      handleInput(props.presetValue)
-    }
-  }, [props.presetValue, handleInput])
-
   if (!ENS) {
     return <Loader className="loader" />
   }
 
-  const handleResolver = async (fn) => {
+  async function handleResolver(fn) {
     try {
       setIsResolvingInProgress(true)
       setResolvedAddress(null)
@@ -118,7 +129,7 @@ function Address(props) {
     }
   }
 
-  const resolveName = async (inputValue) => {
+  async function resolveName(inputValue) {
     // update latest input resolving
     currentInput.current = inputValue
     const addressType = getEthAddressType(inputValue)
@@ -185,21 +196,24 @@ function Address(props) {
             {isResolvingInProgress && <Loader className="loader" />}
             {!isResolvingInProgress && showBlockies()}
             {isResolveNameNotFound() && (
-              <img
-                alt="warning icon"
-                src={warningImage}
-                className="icon-wrapper error-icon"
-              />
+              <WarningImage alt="warning icon" className="icon-wrapper error-icon" />
             )}
             {props.DefaultIcon && !inputValue && <DefaultIcon />}
           </div>
-          <input
-            value={inputValue}
-            onChange={(e) => handleInput(e.currentTarget.value)}
-            placeholder={props.placeholder}
-            spellCheck={false}
-            name="ethereum"
-          />
+          {
+            props.dynamic ?
+                <input
+                    value={inputValue}
+                    onChange={(e) => handleInput(e.currentTarget.value)}
+                    placeholder={props.placeholder}
+                    spellCheck={false}
+                    name="ethereum"
+                    className="address"
+                /> :
+                <div className="address">{inputValue}</div>
+          }
+
+          <div>{error}</div>
         </div>
         <div className="info-wrapper">
           {resolvedAddress && <div className="resolved">{resolvedAddress}</div>}

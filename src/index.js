@@ -1,3 +1,1 @@
-import Address from './Address'
-
-export default Address
+module.exports = require("./Address").default;

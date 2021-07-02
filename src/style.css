@@ -54,11 +54,12 @@
   border-color: red;
 }
 
-.cmp-address input {
+.cmp-address .address {
   width: calc(100% - 70px);
   font-family: Overpass Mono;
   font-weight: 300;
   font-size: 18px;
+  line-height: 30px;
   margin-left: 50px;
   border-width: initial;
   border-style: none;
@@ -69,6 +70,10 @@
   color: #333;
 }
 
+.cmp-address.resolved .address {
+  line-height: normal;
+}
+
 .cmp-address.resolved {
   height: 60px;
 }
@@ -77,7 +82,7 @@
   padding: 10px 5px;
 }
 
-.cmp-address.small input {
+.cmp-address.small .address {
   font-size: 14px;
   font-family: Overpass;
 }
@@ -105,7 +110,7 @@
   margin-top: 10px;
 }
 
-.cmp-address.small.resolved input {
+.cmp-address.small.resolved .address {
   top: -10px;
 }
 
