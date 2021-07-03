@@ -112,10 +112,6 @@ function Address(props) {
     [inputDebouncer]
   )
 
-  if (!ENS) {
-    return <Loader className="loader" />
-  }
-
   async function handleResolver(fn) {
     try {
       setIsResolvingInProgress(true)
@@ -191,15 +187,18 @@ function Address(props) {
           error ? 'error' : ''
         }`}
       >
-        <div className="input-wrapper">
-          <div className="indicator">
-            {isResolvingInProgress && <Loader className="loader" />}
-            {!isResolvingInProgress && showBlockies()}
-            {isResolveNameNotFound() && (
-              <WarningImage alt="warning icon" className="icon-wrapper error-icon" />
-            )}
-            {props.DefaultIcon && !inputValue && <DefaultIcon />}
-          </div>
+        <div className={`input-wrapper ${!props.showBlockies ? 'no-blockies' : ''}`}>
+          {
+            props.showBlockies ?
+            <div className="indicator">
+              {isResolvingInProgress && <Loader className="loader"/>}
+              {!isResolvingInProgress && showBlockies()}
+              {isResolveNameNotFound() && (
+                  <WarningImage alt="warning icon" className="icon-wrapper error-icon"/>
+              )}
+              {props.DefaultIcon && !inputValue && <DefaultIcon/>}
+            </div> : null
+          }
           {
             props.dynamic ?
                 <input
@@ -210,14 +209,18 @@ function Address(props) {
                     name="ethereum"
                     className="address"
                 /> :
-                <div className="address">{inputValue}</div>
+                <div className="address">{resolvedAddress ? `${resolvedAddress} (${inputValue})` : inputValue}</div>
           }
 
           <div>{error}</div>
         </div>
-        <div className="info-wrapper">
-          {resolvedAddress && <div className="resolved">{resolvedAddress}</div>}
-        </div>
+        {
+          props.dynamic ?
+          <div className="info-wrapper">
+            {resolvedAddress && <div className="resolved">{resolvedAddress}</div>}
+          </div> :
+              null
+        }
       </div>
     </div>
   )

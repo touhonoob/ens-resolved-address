@@ -1,5 +1,4 @@
 .cmp-address-wrapper {
-  height: 60px;
   width: 100%;
 }
 
@@ -59,7 +58,6 @@
   font-family: Overpass Mono;
   font-weight: 300;
   font-size: 18px;
-  line-height: 30px;
   margin-left: 50px;
   border-width: initial;
   border-style: none;
@@ -70,12 +68,12 @@
   color: #333;
 }
 
-.cmp-address.resolved .address {
-  line-height: normal;
+.no-blockies .address {
+  margin-left: 0;
 }
 
 .cmp-address.resolved {
-  height: 60px;
+
 }
 
 .cmp-address.small {

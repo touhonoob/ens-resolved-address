@@ -17,4 +17,9 @@ module.exports = Object.assign(require('./webpack.config'), {
         compress: true,
         port: 9000,
     },
+    output: {
+        filename: '[name].[contenthash].js',
+        libraryTarget: "umd",
+        library: "EnsResolvedAddress"
+    }
 })
