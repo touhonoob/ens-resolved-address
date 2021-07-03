@@ -1,6 +1,6 @@
 {
   "name": "ens-resolved-address",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "React ENS address component",
   "main": "dist/ens-resolved-address.min.js",
   "files": [

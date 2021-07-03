@@ -209,7 +209,7 @@ function Address(props) {
                     name="ethereum"
                     className="address"
                 /> :
-                <div className="address">{resolvedAddress ? `${resolvedAddress} (${inputValue})` : inputValue}</div>
+                <div className="address">{resolvedAddress ? props.resolvedOnly ? resolvedAddress : `${resolvedAddress} (${inputValue})` : inputValue}</div>
           }
 
           <div>{error}</div>
