@@ -21,5 +21,6 @@ module.exports = Object.assign(require('./webpack.config'), {
         filename: '[name].[contenthash].js',
         libraryTarget: "umd",
         library: "EnsResolvedAddress"
-    }
+    },
+    devtool: 'eval-source-map',
 })

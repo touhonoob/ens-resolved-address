@@ -17,15 +17,12 @@ import Loader from './Loader.js'
 import { SingleNameBlockies } from './Blockies.js'
 import WarningImage from './assets/warning.svg'
 
-import './style.css'
-
 const ENS_NOT_FOUND = 'ENS name not found'
 
 function Address(props) {
   const [resolvedAddress, setResolvedAddress] = useState(null)
   const [inputValue, setInputValue] = useState('')
   const [isResolvingInProgress, setIsResolvingInProgress] = useState(false)
-  const [error, setError] = useState(null)
   const [ENS, setENS] = useState(null)
   const [web3Connected, setWeb3Connected] = useState(false);
   const currentInput = useRef()
@@ -35,7 +32,6 @@ function Address(props) {
     try {
       const result = await resolveName(input)
       if (input === currentInput.current) {
-        setError(null)
         const { address, type, name } = result
         if (type === ETH_ADDRESS_TYPE.name) {
           setResolvedAddress(address)
@@ -48,7 +44,7 @@ function Address(props) {
       }
       //if newest continue, otherwise ignore
     } catch (error) {
-      setError(error.toString())
+      console.log(error);
       setResolvedAddress(null)
 
       props.onResolve({
@@ -89,6 +85,8 @@ function Address(props) {
         handleInput(props.presetValue)
         initialRun.current = false;
       }
+    } else if (initialRun.current) {
+      setInputValue(props.presetValue)
     }
   }, [props.presetValue, handleInput, ENS, web3Connected]);
 
@@ -96,7 +94,6 @@ function Address(props) {
     async (address) => {
       if (!address || address.length === 0) {
         setInputValue('')
-        setError(null)
         setResolvedAddress(null)
 
         if (inputDebouncer) {
@@ -181,23 +178,19 @@ function Address(props) {
   }
 
   return (
-    <div className={`cmp-address-wrapper ${props.className}`}>
-      <div
-        className={`cmp-address  ${resolvedAddress ? 'resolved' : ''} ${
-          error ? 'error' : ''
-        }`}
-      >
-        <div className={`input-wrapper ${!props.showBlockies ? 'no-blockies' : ''}`}>
+    <span className={`cmp-address-wrapper ${props.className}`}>
+      <span className={`cmp-address  ${resolvedAddress ? 'resolved' : ''}`}>
+        <span className={`input-wrapper ${!props.showBlockies ? 'no-blockies' : ''}`}>
           {
             props.showBlockies ?
-            <div className="indicator">
+            <span className="indicator">
               {isResolvingInProgress && <Loader className="loader"/>}
               {!isResolvingInProgress && showBlockies()}
               {isResolveNameNotFound() && (
                   <WarningImage alt="warning icon" className="icon-wrapper error-icon"/>
               )}
               {props.DefaultIcon && !inputValue && <DefaultIcon/>}
-            </div> : null
+            </span> : null
           }
           {
             props.dynamic ?
@@ -209,20 +202,18 @@ function Address(props) {
                     name="ethereum"
                     className="address"
                 /> :
-                <div className="address">{resolvedAddress ? props.resolvedOnly ? resolvedAddress : `${resolvedAddress} (${inputValue})` : inputValue}</div>
+                <span className="address">{resolvedAddress ? props.resolvedOnly ? resolvedAddress : `${resolvedAddress} (${inputValue})` : inputValue}</span>
           }
-
-          <div>{error}</div>
-        </div>
+        </span>
         {
           props.dynamic ?
-          <div className="info-wrapper">
-            {resolvedAddress && <div className="resolved">{resolvedAddress}</div>}
-          </div> :
+          <span className="info-wrapper">
+            {resolvedAddress && <span className="resolved">{resolvedAddress}</span>}
+          </span> :
               null
         }
-      </div>
-    </div>
+      </span>
+    </span>
   )
 }
 
